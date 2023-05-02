@@ -5,6 +5,7 @@ import {TextInput, View} from 'react-native';
 import {TextInput as PageTextInput} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Moment from 'moment';
+import {usePaperScheme} from '../../styles';
 
 const FORMATS = {
   date: 'YYYY-MM-DD',
@@ -25,6 +26,7 @@ const DateTimePickerInputTextField = (
   const [show, setShow] = useState(false);
   const [confirmDate, setConfirmDate] = useState<Date | undefined>(undefined);
   const inputRef = useRef<TextInput>(null);
+  const paperScheme = usePaperScheme();
 
   const onDateChange = (selectedDate: Date) => {
     console.log(selectedDate);
@@ -59,10 +61,16 @@ const DateTimePickerInputTextField = (
             <PageTextInput.Icon
               accessible={false}
               // eslint-disable-next-line react/no-unstable-nested-components
-              icon={() => <Icon name="calendar" size={24} />}
+              icon={() => (
+                <Icon
+                  name="calendar"
+                  size={24}
+                  color={paperScheme.colors.onSurfaceVariant}
+                />
+              )}
             />
           }
-          placeholder="Select pickup date"
+          label="Select pickup date"
           value={
             confirmDate !== undefined
               ? Moment(confirmDate).format(FORMATS.datetimefull)

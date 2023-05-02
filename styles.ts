@@ -130,6 +130,13 @@ const getStyles = ({paper}: {paper: typeof LIGHT_THEME}) =>
       padding: 10,
       backgroundColor: paper.colors.background,
     },
+    bottomUpContainer: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      gap: 10,
+      padding: 10,
+      backgroundColor: paper.colors.background,
+    },
     modal: {
       borderRadius: 4,
       padding: 10,
@@ -165,11 +172,19 @@ const getStyles = ({paper}: {paper: typeof LIGHT_THEME}) =>
       color: paper.colors.onPrimary,
     },
     searchLocationInput: {
+      flex: 1,
+      height: 60,
       backgroundColor: paper.colors.surfaceVariant,
-      width: '100%',
     },
     horizontalContainer: {
       flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%',
+    },
+    horizontalContainer1: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%',
       gap: 10,
       justifyContent: 'center',
     },
