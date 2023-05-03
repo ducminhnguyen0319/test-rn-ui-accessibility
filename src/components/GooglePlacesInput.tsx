@@ -71,6 +71,7 @@ const CustomTextInput = React.forwardRef<TextInput, CustomTextInputProps>(
             ref={ref}
             label={props.label}
             placeholder={props.placeholder}
+            value={props.value}
             left={
               <PageTextInput.Icon
                 accessible={false}
@@ -133,6 +134,7 @@ const CustomTextInput = React.forwardRef<TextInput, CustomTextInputProps>(
 export interface GooglePlacesInputProps {
   predefinedPlaces: Place[];
   placeholder: string | undefined;
+  value: string | undefined;
   firstPoint?: boolean;
   lastPoint?: boolean;
   onSelected: (
@@ -153,6 +155,7 @@ const GooglePlacesInput = React.forwardRef<
   const {
     predefinedPlaces,
     placeholder,
+    value,
     firstPoint,
     lastPoint,
     onSelected,
@@ -161,7 +164,6 @@ const GooglePlacesInput = React.forwardRef<
     onAdded,
     onDeleted,
   } = props;
-  // const [debugData, setDebugData] = useState<GooglePlaceData | null>(null);
 
   const handleAdded = () => {
     if (onAdded) {
@@ -189,6 +191,7 @@ const GooglePlacesInput = React.forwardRef<
         minLength={2}
         debounce={500}
         fetchDetails={true}
+        disableScroll={true}
         autoFillOnNotFound={true}
         enablePoweredByContainer={false}
         enableHighAccuracyLocation={true}
@@ -198,6 +201,7 @@ const GooglePlacesInput = React.forwardRef<
         textInputProps={{
           InputComp: CustomTextInput,
           placeholder: placeholder,
+          value,
           lastPoint,
           firstPoint,
           index,

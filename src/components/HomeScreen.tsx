@@ -1,11 +1,18 @@
 import React, {Key, useState} from 'react';
 
 import uuid from 'react-native-uuid';
-import {View, Platform, KeyboardAvoidingView, Keyboard} from 'react-native';
+import {
+  View,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+  ScrollView,
+} from 'react-native';
 import useStyles from '../../styles';
 
+import BlankView from './BlankView';
 import DateTimePickerInputTextField from './DateTimePickerInputTextField';
-import {Button as PaperButton} from 'react-native-paper';
+import {Button as PaperButton, Text} from 'react-native-paper';
 
 // Request location permission
 import {
@@ -82,6 +89,7 @@ const HomeScreen = () => {
     ref: ref2,
   };
 
+  const [pickupDate, setPickupDate] = useState<Date | undefined>();
   const [points, setPoints] = useState<SelectedPointProps[]>([
     firstPoint,
     lastPoint,
@@ -91,9 +99,13 @@ const HomeScreen = () => {
 
   const onSelectedDateTime = (date: any) => {
     console.log(date);
-    const ref = points[0].ref;
-    ref.current?.focus();
+    setPickupDate(date);
     setDisableBt1(false);
+
+    if (points[0].value === undefined) {
+      const ref = points[0].ref;
+      ref.current?.focus();
+    }
   };
 
   const onSelectedPoint = (
@@ -103,6 +115,7 @@ const HomeScreen = () => {
   ) => {
     const newArray = [...points];
     newArray[index].value = data.description ?? details?.name;
+    setPoints([]);
     setPoints(newArray);
 
     if (index < points.length - 1) {
@@ -138,34 +151,66 @@ const HomeScreen = () => {
     setPoints([...points.slice(0, atIndex), ...points.slice(atIndex + 1)]);
   };
 
+  console.log(points.map(item => item.value));
+
   return (
-    <View style={styles.bottomUpContainer}>
+    <ScrollView
+      contentContainerStyle={styles.scrollviewContentContainer}
+      keyboardShouldPersistTaps="always"
+      style={styles.scrollviewBottomUp}>
+      <Text>Some predefine properties go here.</Text>
+      <BlankView display={pickupDate === undefined} />
       <DateTimePickerInputTextField onSelected={onSelectedDateTime} />
-      {points.map((point, index) => (
-        <KeyboardAvoidingView
-          keyboardVerticalOffset={20}
-          behavior="padding"
-          key={point.key}>
-          <GooglePlacesInput
-            ref={point.ref}
-            placeholder={
-              index === 0
-                ? 'Select pickup point'
-                : index === points.length - 1
-                ? 'Select dropoff point'
-                : 'Select next point'
+      {points.map((point, index) => {
+        const checkFirstPoint = index === 0;
+        const checkLastPoint = index === points.length - 1;
+        const placeholder =
+          index === 0
+            ? 'Select pickup point'
+            : index === points.length - 1
+            ? 'Select dropoff point'
+            : 'Select next point';
+        const hint = `press to add a point after ${point.value}`;
+
+        var showBlankView = false;
+        if (pickupDate !== undefined) {
+          if (point.value === undefined) {
+            showBlankView = true;
+          }
+
+          for (let i = 0; i < index; i++) {
+            const pointX = points[i];
+            if (pointX.value === undefined) {
+              showBlankView = false;
+              break;
             }
-            hintAdd={`press to add a point after ${point.value}`}
-            predefinedPlaces={[homePlace, workPlace]}
-            onSelected={onSelectedPoint}
-            index={index}
-            firstPoint={index === 0}
-            lastPoint={index === points.length - 1}
-            onAdded={onAddedPoint}
-            onDeleted={onDeletedPoint}
-          />
-        </KeyboardAvoidingView>
-      ))}
+          }
+        }
+
+        return [
+          <BlankView display={showBlankView} key={`${point.ref}-blank`} />,
+          <KeyboardAvoidingView
+            keyboardVerticalOffset={20}
+            behavior="padding"
+            key={point.key}>
+            <GooglePlacesInput
+              key={point.key}
+              ref={point.ref}
+              placeholder={placeholder}
+              hintAdd={hint}
+              value={point.value}
+              predefinedPlaces={[homePlace, workPlace]}
+              onSelected={onSelectedPoint}
+              index={index}
+              firstPoint={checkFirstPoint}
+              lastPoint={checkLastPoint}
+              onAdded={onAddedPoint}
+              onDeleted={onDeletedPoint}
+            />
+          </KeyboardAvoidingView>,
+        ];
+      })}
+      {/* Buttons */}
       <View style={styles.horizontalContainer1}>
         <PaperButton
           disabled={disableBt1}
@@ -186,7 +231,8 @@ const HomeScreen = () => {
           Confirm
         </PaperButton>
       </View>
-    </View>
+    </ScrollView>
+    // </KeyboardAvoidingView>
   );
 };
 

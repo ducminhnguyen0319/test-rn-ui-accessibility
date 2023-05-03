@@ -130,12 +130,19 @@ const getStyles = ({paper}: {paper: typeof LIGHT_THEME}) =>
       padding: 10,
       backgroundColor: paper.colors.background,
     },
-    bottomUpContainer: {
-      flex: 1,
-      justifyContent: 'flex-end',
+    containerBlank: {
+      justifyContent: 'center',
+      flexGrow: 1,
+    },
+    scrollviewBottomUp: {
+      backgroundColor: paper.colors.background,
+      paddingBottom: 10,
+    },
+    scrollviewContentContainer: {
+      flexGrow: 1,
+      flexWrap: 'wrap',
       gap: 10,
       padding: 10,
-      backgroundColor: paper.colors.background,
     },
     modal: {
       borderRadius: 4,
